@@ -37,12 +37,14 @@ import io.sentry.SentryOptions
 import io.sentry.android.core.SentryAndroid
 import io.sentry.android.navigation.SentryNavigationListener
 import io.sentry.protocol.SentryId
+import com.example.empowerplant.EmpowerPlant
 
 
 class MainActivity : ComponentActivity() {
-    private var screen = "empowerplant_screen"
+
     private val sentryNavListener = SentryNavigationListener()
     private var navController: NavHostController? = null
+    private var screen = "list_app_screen"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -52,9 +54,9 @@ class MainActivity : ComponentActivity() {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                BackButton(navController!!)
+                BackButton(navController!!);
 
-                userFeedback(openDialog)
+                userFeedback(openDialog);
                 NavHost(navController = navController!!, startDestination = screen) {
                     composable(route = "list_app_screen") {
                         ListApp(navController = navController!!)
@@ -69,6 +71,8 @@ class MainActivity : ComponentActivity() {
 
     private fun initializeSentry(openDialog: MutableState<Boolean>) {
         SentryAndroid.init(this) { options ->
+            options.tracesSampleRate = 1.0
+            options.profilesSampleRate = 1.0
             options.beforeSend = SentryOptions.BeforeSendCallback {event, hint ->
                 val currentException = event.exceptions?.get(0);
                 if (currentException != null && currentException.type!!.endsWith("ItemDeliveryProcessException")) {
@@ -140,15 +144,15 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun BackButton(navController: NavController?) {
-        Log.d("screen", this.screen)
         var screenVal = if (this.screen == "list_app_screen") "Go to EmpowerPlant" else "Go to ListApp"
-        val text by remember {
+        var text by remember {
             mutableStateOf(screenVal)
         }
-        Log.d("screen_val", screenVal)
         Button(
             onClick = {
-                navBarOnClick(navController)
+                this.screen = if (this.screen == "list_app_screen") "empowerplant_screen" else "list_app_screen"
+                text = if (this.screen == "list_app_screen") "Go to EmpowerPlant" else "Go to ListApp"
+                navController?.navigate(this.screen)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -160,11 +164,6 @@ class MainActivity : ComponentActivity() {
         ) {
             Text(text)
         }
-    }
-
-    private fun navBarOnClick(navController: NavController?) {
-        this.screen = if (this.screen == "list_app_screen") "empowerplant_screen" else "list_app_screen"
-        navController?.navigate(this.screen)
     }
 }
 

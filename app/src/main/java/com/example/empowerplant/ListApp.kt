@@ -2,6 +2,8 @@ package com.example.empowerplant
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -27,7 +29,8 @@ fun ListApp(
 ) {
     EmpowerPlantTheme {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
             NavBarImage()
             heading(txt = "Unhandled Error + Attachment")
@@ -44,8 +47,16 @@ fun ListApp(
                 txt = "Application Not Responding",
                 action = { Action.anrException() })
             heading(txt = "NDK/C++")
-            actionBtn(txt = "Native Crash - SIGSEGV", action = { Action.nativeCrash() })
-            actionBtn(txt = "Native Message", action = { Action.nativeMessage() })
+            actionBtn(
+                txt = "Native Crash - SIGSEGV",
+                action = { Action.nativeCrash() })
+            actionBtn(
+                txt = "Native Message",
+                action = { Action.nativeMessage() })
+            heading(txt = "HTTP Errors")
+            actionBtn(
+                txt = "404 HTTP Error",
+                action = { Action.httpError() })
         }
     }
 }

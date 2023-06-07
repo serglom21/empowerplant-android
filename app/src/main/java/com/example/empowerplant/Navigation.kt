@@ -13,7 +13,7 @@ fun Navigation() {
             MainActivity()
         }
         composable(route = Screen.EmpowerPlant.route) {
-            EmpowerPlant(navController)
+            EmpowerPlant(navController = navController!!)
         }
     }
 }

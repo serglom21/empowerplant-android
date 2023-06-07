@@ -36,4 +36,6 @@ object Action {
     }
 
     fun nativeMessage(){}
+
+    fun httpError(){}
 }

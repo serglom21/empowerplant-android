@@ -3,12 +3,15 @@ package com.example.empowerplant
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -44,7 +47,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.example.empowerplant.utils.CartController
-
 
 var cartItems = JSONArray()
 val epc = EmpowerPlantController()
@@ -86,7 +88,11 @@ fun EmpowerPlant(
                 }
 
                 Column(
-                    modifier = Modifier.width(250.dp).height(40.dp).fillMaxWidth().padding(start = 150.dp),
+                    modifier = Modifier
+                        .width(250.dp)
+                        .height(40.dp)
+                        .fillMaxWidth()
+                        .padding(start = 150.dp),
                     horizontalAlignment = Alignment.End
                 ) {
 
@@ -109,7 +115,8 @@ fun EmpowerPlant(
                     }
                 }
             }
-            buildItems(updateCount, count)
+            loadProducts(updateCount, count)
+            //buildItems(updateCount, count)
 
             /*
             Row() {
@@ -145,23 +152,31 @@ sealed class Result<out T> {
 }
 
 @Composable
-fun loadProducts(): State<Result<JSONArray>> {
-   return produceState<Result<JSONArray>>(initialValue = Result.Loading){
-       val epc = EmpowerPlantController()
-       epc.fetchProducts()
-
-       value = if (epc.getProducts() == null) {
-           Result.Error
-       } else {
-           Result.Success(epc.getProducts())
-       }
-   }
+fun loadProducts(updateCount: (Int) -> Unit, count: Int) {
+    /*
+    val productsLoaded = remember {
+        mutableStateOf(false)
+    }
+    if (!productsLoaded.value) {
+        Row() {
+            CircularProgressIndicator(
+                modifier = Modifier.drawBehind {
+                    drawCircle(
+                        Color.Blue,
+                        radius = size.width / 2 - 5.dp.toPx() / 2,
+                        style = Stroke(5.dp.toPx())
+                    ) },
+                color = Color.LightGray,
+                strokeWidth = 5.dp
+            )
+        }
+    }*/
+    buildItems(updateCount = updateCount, count = count)
 }
 
 @Composable
 fun buildItems(updateCount: (Int) -> Unit, count: Int){
     var products = epc.fetchProducts()
-    if (products != null) {
         for (i in 0 until products.length()) {
             Row(
                 modifier = Modifier
@@ -176,7 +191,8 @@ fun buildItems(updateCount: (Int) -> Unit, count: Int){
                             Offset(size.width, y),
                             strokeWidth
                         )
-                    }){
+                    }
+                    .verticalScroll(rememberScrollState())){
                 val imageModifier = Modifier
                     .padding(start = 20.dp, top = 20.dp, bottom = 10.dp)
                     .width(90.dp)
@@ -204,7 +220,6 @@ fun buildItems(updateCount: (Int) -> Unit, count: Int){
                 }
             }
         }
-    }
 }
 
 fun addItemToCart(item : Any, count: Int, updateCount : (Int) -> Unit) {
