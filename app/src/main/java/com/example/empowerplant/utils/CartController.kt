@@ -15,11 +15,12 @@ class CartController {
     private val products = JSONArray()
 
     fun checkout() {
-        val checkoutTransaction = Sentry.startTransaction("checkout [android]", "http.client")
+        /*val checkoutTransaction = Sentry.startTransaction("checkout [android]", "http.client")
         checkoutTransaction.operation = "http"
-        Sentry.configureScope { scope: Scope ->
+        Sentry.configureScope { scope ->
             scope.transaction = checkoutTransaction
-        }
+        }*/
+        val currentTransaction = Sentry.getSpan()
         val headers = "application/json; charset=utf-8"
         val json = headers?.toMediaTypeOrNull()
         val domain = getEmpowerPlantDomain()
@@ -35,7 +36,7 @@ class CartController {
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) {
-                    processDeliveryItem(checkoutTransaction)
+                    processDeliveryItem(currentTransaction as ITransaction)
                 }
             }
 

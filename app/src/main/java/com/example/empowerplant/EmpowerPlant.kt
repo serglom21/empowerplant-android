@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.room.Room
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
@@ -51,6 +52,7 @@ import com.example.empowerplant.utils.CartController
 var cartItems = JSONArray()
 val epc = EmpowerPlantController()
 val cartController = CartController()
+
 
 @Composable
 fun EmpowerPlant(

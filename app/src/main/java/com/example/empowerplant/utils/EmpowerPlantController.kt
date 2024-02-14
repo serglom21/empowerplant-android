@@ -1,16 +1,23 @@
 package com.example.empowerplant.utils
 
 import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.room.Room
+import com.example.empowerplant.utils.database.PlantRoomDatabase
 import okhttp3.*
-import okio.IOException
 import org.json.JSONArray
+import java.io.IOException
 import java.util.concurrent.CountDownLatch
 
 class EmpowerPlantController {
 
     private var products = JSONArray()
 
+    @Composable
     fun fetchProducts() : JSONArray {
+        val context = LocalContext.current
+        //val db = Room.databaseBuilder(context, PlantRoomDatabase::class.java, "plants").build()
         val domain = getEmpowerPlantDomain()
         val endpoint = "$domain/products"
 

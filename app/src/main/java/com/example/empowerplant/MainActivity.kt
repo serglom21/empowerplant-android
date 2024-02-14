@@ -49,14 +49,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val openDialog = remember { mutableStateOf(false)  }
-            initializeSentry(openDialog)
+            //initializeSentry(openDialog)
             navController = rememberNavController()
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 BackButton(navController!!);
 
-                userFeedback(openDialog);
+                //userFeedback(openDialog);
                 NavHost(navController = navController!!, startDestination = screen) {
                     composable(route = "list_app_screen") {
                         ListApp(navController = navController!!)
@@ -71,8 +71,12 @@ class MainActivity : ComponentActivity() {
 
     private fun initializeSentry(openDialog: MutableState<Boolean>) {
         SentryAndroid.init(this) { options ->
+            options.dsn = "https://427bc4a8b392f92f0ef02c9e121b616a@o4504533099937792.ingest.sentry.io/4506028206850048";
             options.tracesSampleRate = 1.0
             options.profilesSampleRate = 1.0
+            options.isEnableUserInteractionTracing = true
+            options.isEnableUserInteractionBreadcrumbs = true
+            options.isEnableActivityLifecycleBreadcrumbs = true
             options.beforeSend = SentryOptions.BeforeSendCallback {event, hint ->
                 val currentException = event.exceptions?.get(0);
                 if (currentException != null && currentException.type!!.endsWith("ItemDeliveryProcessException")) {
